@@ -1,0 +1,24 @@
+#!/bin/bash -       
+#title           :wpsetup.sh
+#description     :This script will magically setup new WordPress in seconds.
+#author		 			 :Shivam Singh
+#date            :20170810
+#version         :0.1
+#usage		       :wpsetup wordpress
+#notes           :place this file in /home/shivam/bin/
+#==============================================================================
+
+install_name=$1
+dir="/var/www/$install_name"
+wget https://wordpress.org/latest.zip -O /tmp/wp.zip
+echo $dir
+unzip -o /tmp/wp.zip -d $dir
+rm /tmp/wp.zip
+mysql -uroot -ppassword -e "create database $install_name"
+mv $dir/wordpress/* $dir/.
+rmdir $dir/wordpress
+mv $dir/wp-config-sample.php $dir/wp-config.php
+sed -i -- "s/database_name_here/$install_name/g" $dir/wp-config.php
+sed -i -- 's/username_here/root/g' $dir/wp-config.php
+sed -i -- 's/password_here/password/g' $dir/wp-config.php
+google-chrome-stable 127.0.0.1/$install_name
